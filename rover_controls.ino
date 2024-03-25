@@ -101,7 +101,7 @@ void Rover::steer(int valRF, int valLF, int valRB, int valLB, int speed){
     incrementRB=1;}
   else {
     incrementRB=-1;}
-  if (valLB > posRB){
+  if (valLB > posLB){
     incrementLB=1;}
   else {
     incrementLB=-1;}
@@ -195,12 +195,7 @@ void loop()
   Executor();
   batteryFlag=batteryValue();
   if (batteryFlag <= 10){
-      for (int i=0; i<5; i++){
-      digitalWrite(redLed,HIGH);
-      delay(300);
-      digitalWrite(redLed,LOW);
-      delay(300);
-  }
+  digitalWrite(redLed,HIGH);
   }
 }
 
@@ -208,7 +203,7 @@ float batteryValue(){
   float batteryRead;
   digitalWrite(batteryPulse,HIGH);
   batteryRead=analogRead(batteryProbe);
-  batteryRead=(12/3,3)*batteryRead;
+  batteryRead=(12/3.3)*batteryRead;
   return batteryRead; 
 }
 
@@ -241,6 +236,8 @@ void Executor(){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
       Adversity.steer(Adversity.posRF+5, Adversity.posLF+5,Adversity.posRB-5,Adversity.posLB-5,20);
+      previousTime=millis();
+      while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
       digitalWrite(greenLed,LOW);
   }
@@ -248,6 +245,8 @@ void Executor(){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
       Adversity.steer(Adversity.posRF-5, Adversity.posLF-5,Adversity.posRB+5,Adversity.posLB+5,20);
+      previousTime=millis();
+      while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
       digitalWrite(greenLed,LOW);
   }
