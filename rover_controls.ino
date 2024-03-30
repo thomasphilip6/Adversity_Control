@@ -163,6 +163,91 @@ void Rover::keepRoverAtSpeed(String direction, int speed){
   motorRB.sendPWM(direction,speed);
   motorLB.sendPWM(direction,speed);
 }
+
+class Rover_Calculations{
+  public:
+  //distances from centers of wheels to center of steering
+    float LFy=274.28;
+    float RFy=274.28;
+    float RBy=133;
+    float LBy=133;
+
+    float LFx=184;
+    float RFx=184;
+    float RBx=133;
+    float LBx=133;
+    int getTargetAngleLF(String direction, float targetRadius);
+    int getTargetAngleRF(String direction, float targetRadius);
+    int getTargetAngleLB(String direction, float targetRadius);
+    int getTargetAngleRB(String direction, float targetRadius);
+};
+int Rover_Calculations::getTargetAngleLF(String direction, float targetRadius){
+  float LF_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    LF_Radius=targetRadius+LFx;
+    angleDecimal=asin(LFy/LF_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+  else {
+    LF_Radius=targetRadius-LFx;
+    angleDecimal=asin(LFy/LF_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=(-1);
+    //when steering right, the angle is substracted
+  }
+  return angle;
+}
+int Rover_Calculations::getTargetAngleRF(String direction, float targetRadius){
+  float RF_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    RF_Radius=targetRadius-RFx;
+    angleDecimal=asin(RFy/RF_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+  else {
+    RF_Radius=targetRadius+RFx;
+    angleDecimal=asin(RFy/RF_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }
+  return angle;
+}
+int Rover_Calculations::getTargetAngleLB(String direction, float targetRadius){
+  float LB_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    LB_Radius=targetRadius+LBx;
+    angleDecimal=asin(LBy/LB_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }  
+  else {
+    LB_Radius=targetRadius-LBx;
+    angleDecimal=targetRadius+LBx;
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+}
+int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
+  float RB_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    RB_Radius=targetRadius-RBx;
+    angleDecimal=asin(RBy/RB_Radius);
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }  
+  else {
+    RB_Radius=targetRadius+RBx;
+    angleDecimal=targetRadius+RBx;
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+}
 Rover Adversity;
 int redLed=48;
 int greenLed=47;
