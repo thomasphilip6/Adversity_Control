@@ -53,6 +53,7 @@ class Rover{
   void steer(int valRF, int valLF, int valRB, int valLB, int speed);
   void goToSpeed(String direction, int targetSpeed, int currentSpeed);
   void keepRoverAtSpeed(String direction, int speed);
+  void speedSteer(String direction, String side, int targetRadius);
 
 };
 
@@ -128,32 +129,7 @@ void Rover::steer(int valRF, int valLF, int valRB, int valLB, int speed){
 
 }
 
-void Rover::goToSpeed(String direction, int targetSpeed, int currentSpeed){
-  //acceleration
-  if (targetSpeed>currentSpeed){
-    for (int i=currentSpeed; i<=targetSpeed; i++){
-      motorRF.sendPWM(direction,i);
-      motorLF.sendPWM(direction,i);
-      motorRM.sendPWM(direction,i);
-      motorLM.sendPWM(direction,i);
-      motorRB.sendPWM(direction,i);
-      motorLB.sendPWM(direction,i);
-      delay(5);
-    }
-  }
-  //deceleration
-  if (currentSpeed>targetSpeed){
-    for(int i=currentSpeed; i>=targetSpeed; i--){
-      motorRF.sendPWM(direction,i);
-      motorLF.sendPWM(direction,i);
-      motorRM.sendPWM(direction,i);
-      motorLM.sendPWM(direction,i);
-      motorRB.sendPWM(direction,i);
-      motorLB.sendPWM(direction,i);
-      delay(5);
-    }
-  }
-}
+
 
 void Rover::keepRoverAtSpeed(String direction, int speed){
   motorRF.sendPWM(direction,speed);
@@ -162,6 +138,61 @@ void Rover::keepRoverAtSpeed(String direction, int speed){
   motorLM.sendPWM(direction,speed);
   motorRB.sendPWM(direction,speed);
   motorLB.sendPWM(direction,speed);
+}
+
+void Rover::speedSteer(String direction, String side, int targetRadius){
+  int speedRF;
+  int speedLF;
+  int speedRM;
+  int speedLM;
+  int speedRB;
+  int speedLB;
+  if (side=="R"){
+    float radiusLF=targetRadius+Adversity_Calculations.LFx;
+    float radiusRF=targetRadius-Adversity_Calculations.RFx;
+    float radiusLB=targetRadius+Adversity_Calculations.LBx;
+    float radiusRB=targetRadius-Adversity_Calculations.RBx;
+    float radiusRM=targetRadius-Adversity_Calculations.Mx;
+    float radiusLM=targetRadius+Adversity_Calculations.Mx;
+    //in case of right turn, LF has the most to travel
+    speedLM=255;//tinker to put the maximum value to match mapping accounting for deviation of motors speed
+    float speed_RF=(radiusRF/radiusLM)*speedLM;
+    float speed_LB=(radiusLB/radiusLM)*speedLM;
+    float speed_RB=(radiusRB/radiusLM)*speedLM;
+    float speed_RM=(radiusRM/radiusLM)*speedLM;
+    float speed_LF=(radiusLF/radiusLM)*speedLM;
+    speedRF=map(speed_RF, 0, 255, 0, 255);
+    speedLB=map(speed_LB, 0, 255, 0, 255);
+    speedRB=map(speed_RB, 0, 255, 0, 255);
+    speedRM=map(speed_RM,0,255,0,255);
+    speedLF=map(speed_LF,0,255,0,255);
+  }
+  else {
+    float radiusLF=targetRadius-Adversity_Calculations.LFx;
+    float radiusRF=targetRadius+Adversity_Calculations.RFx;
+    float radiusLB=targetRadius-Adversity_Calculations.LBx;
+    float radiusRB=targetRadius+Adversity_Calculations.RBx;
+    float radiusRM=targetRadius+Adversity_Calculations.Mx;
+    float radiusLM=targetRadius-Adversity_Calculations.Mx; 
+    //in case of left turn, RF has the most to travel
+    speedRM=255;//to tinker
+    float speed_LF=(radiusLF/radiusRM)*speedRM;
+    float speed_LB=(radiusLB/radiusRM)*speedRM;
+    float speed_RB=(radiusRB/radiusRM)*speedRM;
+    float speed_RF=(radiusRF/radiusRM)*speedRM;
+    float speed_LM=(radiusLM/radiusRM)*speedRM;
+    speedRF=map(speed_RF, 0, 255, 0, 255);
+    speedLB=map(speed_LB, 0, 255, 0, 255);
+    speedRB=map(speed_RB, 0, 255, 0, 255);
+    speedLM=map(speed_LM,0,255,0,255);
+    speedLF=map(speed_LF,0,255,0,255);
+  }
+  motorLF.sendPWM(direction,speedLF);
+  motorRF.sendPWM(direction,speedRF);
+  motorRM.sendPWM(direction,speedRM);
+  motorLM.sendPWM(direction,speedLM);
+  motorRB.sendPWM(direction,speedRB);
+  motorLB.sendPWM(direction,speedLB); 
 }
 
 class Rover_Calculations{
@@ -176,6 +207,7 @@ class Rover_Calculations{
     float RFx=184;
     float RBx=133;
     float LBx=133;
+    float Mx=254;
     int getTargetAngleLF(String direction, float targetRadius);
     int getTargetAngleRF(String direction, float targetRadius);
     int getTargetAngleLB(String direction, float targetRadius);
@@ -249,6 +281,7 @@ int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
   }
 }
 Rover Adversity;
+Rover_Calculations Adversity_Calculations;
 int redLed=48;
 int greenLed=47;
 int blueLed=49;
@@ -314,8 +347,6 @@ void Executor(){
       while (Serial.available()<0);
       digitalWrite(redLed,LOW);
   }
-  
-  
   
   else if (command=="R"){
       digitalWrite(blueLed,HIGH);
