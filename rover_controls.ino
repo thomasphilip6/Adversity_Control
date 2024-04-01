@@ -1,4 +1,6 @@
 #include <Servo.h>
+int steerRadius=0;
+int steerDirection;
 int batteryProbe=A0;
 int batteryPulse=26;
 float batteryFlag;
@@ -219,14 +221,14 @@ int Rover_Calculations::getTargetAngleLF(String direction, float targetRadius){
   int angle;
   if (direction=="R"){
     LF_Radius=targetRadius+LFx;
-    angleDecimal=asin(LFy/LF_Radius);
+    angleDecimal=degrees(asin(LFy/LF_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
   else {
     LF_Radius=targetRadius-LFx;
-    angleDecimal=asin(LFy/LF_Radius);
+    angleDecimal=degrees(asin(LFy/LF_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
-    angle=(-1);
+    angle=angle*(-1);
     //when steering right, the angle is substracted
   }
   return angle;
@@ -237,12 +239,12 @@ int Rover_Calculations::getTargetAngleRF(String direction, float targetRadius){
   int angle;
   if (direction=="R"){
     RF_Radius=targetRadius-RFx;
-    angleDecimal=asin(RFy/RF_Radius);
+    angleDecimal=degrees(asin(RFy/RF_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
   else {
     RF_Radius=targetRadius+RFx;
-    angleDecimal=asin(RFy/RF_Radius);
+    angleDecimal=degrees(asin(RFy/RF_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
     angle=angle*(-1);
   }
@@ -254,13 +256,13 @@ int Rover_Calculations::getTargetAngleLB(String direction, float targetRadius){
   int angle;
   if (direction=="R"){
     LB_Radius=targetRadius+LBx;
-    angleDecimal=asin(LBy/LB_Radius);
+    angleDecimal=degrees(asin(LBy/LB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
     angle=angle*(-1);
   }  
   else {
     LB_Radius=targetRadius-LBx;
-    angleDecimal=targetRadius+LBx;
+    angleDecimal=degrees(asin(LBy/LB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
 }
@@ -270,13 +272,13 @@ int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
   int angle;
   if (direction=="R"){
     RB_Radius=targetRadius-RBx;
-    angleDecimal=asin(RBy/RB_Radius);
+    angleDecimal=degrees(asin(RBy/RB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
     angle=angle*(-1);
   }  
   else {
     RB_Radius=targetRadius+RBx;
-    angleDecimal=targetRadius+RBx;
+    angleDecimal=degrees(asin(RBy/RB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
 }
