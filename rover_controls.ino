@@ -6,6 +6,7 @@ String steerDirection;
 int batteryProbe=A0;
 int batteryPulse=26;
 float batteryFlag;
+char isMooving='n';
 String command;
 long unsigned previousTime=0;
 class DCMotor {
@@ -41,6 +42,93 @@ Servo wheelRF;
 Servo wheelLF;
 Servo wheelRB;
 Servo wheelLB;
+
+class Rover_Calculations{
+  public:
+  //distances from centers of wheels to center of steering
+    float LFy=274.28;
+    float RFy=274.28;
+    float RBy=133;
+    float LBy=133;
+
+    float LFx=184;
+    float RFx=184;
+    float RBx=133;
+    float LBx=133;
+    float Mx=254;
+    int getTargetAngleLF(String direction, float targetRadius);
+    int getTargetAngleRF(String direction, float targetRadius);
+    int getTargetAngleLB(String direction, float targetRadius);
+    int getTargetAngleRB(String direction, float targetRadius);
+};
+int Rover_Calculations::getTargetAngleLF(String direction, float targetRadius){
+  float LF_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    LF_Radius=targetRadius+LFx;
+    angleDecimal=degrees(asin(LFy/LF_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+  else {
+    LF_Radius=targetRadius-LFx;
+    angleDecimal=degrees(asin(LFy/LF_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+    //when steering right, the angle is substracted
+  }
+  return angle;
+}
+int Rover_Calculations::getTargetAngleRF(String direction, float targetRadius){
+  float RF_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    RF_Radius=targetRadius-RFx;
+    angleDecimal=degrees(asin(RFy/RF_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+  else {
+    RF_Radius=targetRadius+RFx;
+    angleDecimal=degrees(asin(RFy/RF_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }
+  return angle;
+}
+int Rover_Calculations::getTargetAngleLB(String direction, float targetRadius){
+  float LB_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    LB_Radius=targetRadius+LBx;
+    angleDecimal=degrees(asin(LBy/LB_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }  
+  else {
+    LB_Radius=targetRadius-LBx;
+    angleDecimal=degrees(asin(LBy/LB_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+}
+int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
+  float RB_Radius;
+  float angleDecimal;
+  int angle;
+  if (direction=="R"){
+    RB_Radius=targetRadius-RBx;
+    angleDecimal=degrees(asin(RBy/RB_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+    angle=angle*(-1);
+  }  
+  else {
+    RB_Radius=targetRadius+RBx;
+    angleDecimal=degrees(asin(RBy/RB_Radius));
+    angle=map(angleDecimal, 0, 180, 0, 180);
+  }
+}
+Rover_Calculations Adversity_Calculations;
 
 class Rover{
   public:
@@ -199,93 +287,7 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
   motorLB.sendPWM(direction,speedLB); 
 }
 
-class Rover_Calculations{
-  public:
-  //distances from centers of wheels to center of steering
-    float LFy=274.28;
-    float RFy=274.28;
-    float RBy=133;
-    float LBy=133;
-
-    float LFx=184;
-    float RFx=184;
-    float RBx=133;
-    float LBx=133;
-    float Mx=254;
-    int getTargetAngleLF(String direction, float targetRadius);
-    int getTargetAngleRF(String direction, float targetRadius);
-    int getTargetAngleLB(String direction, float targetRadius);
-    int getTargetAngleRB(String direction, float targetRadius);
-};
-int Rover_Calculations::getTargetAngleLF(String direction, float targetRadius){
-  float LF_Radius;
-  float angleDecimal;
-  int angle;
-  if (direction=="R"){
-    LF_Radius=targetRadius+LFx;
-    angleDecimal=degrees(asin(LFy/LF_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-  }
-  else {
-    LF_Radius=targetRadius-LFx;
-    angleDecimal=degrees(asin(LFy/LF_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-    angle=angle*(-1);
-    //when steering right, the angle is substracted
-  }
-  return angle;
-}
-int Rover_Calculations::getTargetAngleRF(String direction, float targetRadius){
-  float RF_Radius;
-  float angleDecimal;
-  int angle;
-  if (direction=="R"){
-    RF_Radius=targetRadius-RFx;
-    angleDecimal=degrees(asin(RFy/RF_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-  }
-  else {
-    RF_Radius=targetRadius+RFx;
-    angleDecimal=degrees(asin(RFy/RF_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-    angle=angle*(-1);
-  }
-  return angle;
-}
-int Rover_Calculations::getTargetAngleLB(String direction, float targetRadius){
-  float LB_Radius;
-  float angleDecimal;
-  int angle;
-  if (direction=="R"){
-    LB_Radius=targetRadius+LBx;
-    angleDecimal=degrees(asin(LBy/LB_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-    angle=angle*(-1);
-  }  
-  else {
-    LB_Radius=targetRadius-LBx;
-    angleDecimal=degrees(asin(LBy/LB_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-  }
-}
-int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
-  float RB_Radius;
-  float angleDecimal;
-  int angle;
-  if (direction=="R"){
-    RB_Radius=targetRadius-RBx;
-    angleDecimal=degrees(asin(RBy/RB_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-    angle=angle*(-1);
-  }  
-  else {
-    RB_Radius=targetRadius+RBx;
-    angleDecimal=degrees(asin(RBy/RB_Radius));
-    angle=map(angleDecimal, 0, 180, 0, 180);
-  }
-}
 Rover Adversity;
-Rover_Calculations Adversity_Calculations;
 int redLed=48;
 int greenLed=47;
 int blueLed=49;
@@ -341,6 +343,7 @@ void Executor(){
       else {
         Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
       }
+      isMooving='f';
       while (Serial.available()<0){};
       digitalWrite(blueLed,LOW);
   }
@@ -352,12 +355,14 @@ void Executor(){
       else {
         Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
       }
+      isMooving='b';
       while (Serial.available()<0){};
       digitalWrite(greenLed,LOW);
   }
   else if (command=="S"){
       digitalWrite(redLed,HIGH);
       Adversity.keepRoverAtSpeed("backward",0);{}
+      isMooving='n';
       while (Serial.available()<0);
       digitalWrite(redLed,LOW);
   }
@@ -388,6 +393,14 @@ void Executor(){
       else {
         steerCounter=steerCounter-1;  
       }
+      //update speeds
+      if (isMooving=='f' && steerCounter!=0){
+        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      }
+      else if (isMooving=='b' && steerCounter!=0){
+        Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      }  
+      else{}
       previousTime=millis();
       while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
@@ -419,6 +432,14 @@ void Executor(){
       else {
         steerCounter=steerCounter+1;  
       }
+      //update speeds
+      if (isMooving=='f' && steerCounter!=0){
+        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      }
+      else if (isMooving=='b' && steerCounter!=0){
+        Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      }  
+      else{}
       previousTime=millis();
       while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
