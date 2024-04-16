@@ -133,10 +133,10 @@ Rover_Calculations Adversity_Calculations;
 class Rover{
   public:
 
-  int initRF=70;
+  int initRF=67;
   int initLF=67;
-  int initRB=67;
-  int initLB=67;
+  int initRB=61;
+  int initLB=63;
   int posRF=0;
   int posLF=0;
   int posRB=0;
@@ -247,17 +247,17 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
     float radiusRM=targetRadius-Adversity_Calculations.Mx;
     float radiusLM=targetRadius+Adversity_Calculations.Mx;
     //in case of right turn, LF has the most to travel
-    speedLM=255;//tinker to put the maximum value to match mapping accounting for deviation of motors speed
+    speedLM=223;//tinker to put the maximum value to match mapping accounting for deviation of motors speed
     float speed_RF=(radiusRF/radiusLM)*speedLM;
     float speed_LB=(radiusLB/radiusLM)*speedLM;
     float speed_RB=(radiusRB/radiusLM)*speedLM;
     float speed_RM=(radiusRM/radiusLM)*speedLM;
     float speed_LF=(radiusLF/radiusLM)*speedLM;
-    speedRF=map(speed_RF, 0, 255, 0, 255);
-    speedLB=map(speed_LB, 0, 255, 0, 255);
-    speedRB=map(speed_RB, 0, 255, 0, 255);
-    speedRM=map(speed_RM,0,255,0,255);
-    speedLF=map(speed_LF,0,255,0,255);
+    speedRF=map(speed_RF, 0, 255, 80, 130);
+    speedLB=map(speed_LB, 0, 255, 70, 155);
+    speedRB=map(speed_RB, 0, 255, 90, 255);
+    speedRM=map(speed_RM,0,255,80,211);
+    speedLF=map(speed_LF,0,255,80,180);
   }
   else {
     float radiusLF=targetRadius-Adversity_Calculations.LFx;
@@ -267,17 +267,17 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
     float radiusRM=targetRadius+Adversity_Calculations.Mx;
     float radiusLM=targetRadius-Adversity_Calculations.Mx; 
     //in case of left turn, RF has the most to travel
-    speedRM=255;//to tinker
+    speedRM=211;//to tinker
     float speed_LF=(radiusLF/radiusRM)*speedRM;
     float speed_LB=(radiusLB/radiusRM)*speedRM;
     float speed_RB=(radiusRB/radiusRM)*speedRM;
     float speed_RF=(radiusRF/radiusRM)*speedRM;
     float speed_LM=(radiusLM/radiusRM)*speedRM;
-    speedRF=map(speed_RF, 0, 255, 0, 255);
-    speedLB=map(speed_LB, 0, 255, 0, 255);
-    speedRB=map(speed_RB, 0, 255, 0, 255);
-    speedLM=map(speed_LM,0,255,0,255);
-    speedLF=map(speed_LF,0,255,0,255);
+    speedRF=map(speed_RF, 0, 255, 80, 130);
+    speedLB=map(speed_LB, 0, 255, 70, 155);
+    speedRB=map(speed_RB, 0, 255, 90, 255);
+    speedLM=map(speed_LM,0,255,125,223);
+    speedLF=map(speed_LF,0,255,80,180);
   }
   motorLF.sendPWM(direction,speedLF);
   motorRF.sendPWM(direction,speedRF);
@@ -349,12 +349,12 @@ void Executor(){
   }
   else if (command=="B"){
       digitalWrite(greenLed,HIGH);
-      if (steerCounter==0){
+      //if (steerCounter==0){
         Adversity.keepRoverAtSpeed("backward", 255);
-      }
-      else {
+      //}
+      /*else {
         Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      }
+      }*/
       isMooving='b';
       while (Serial.available()<0){};
       digitalWrite(greenLed,LOW);
@@ -397,10 +397,10 @@ void Executor(){
       if (isMooving=='f' && steerCounter!=0){
         Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
       }
-      else if (isMooving=='b' && steerCounter!=0){
-        Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      }  
-      else{}
+      //else if (isMooving=='b' && steerCounter!=0){
+      //  Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      //}  
+      //else{}
       previousTime=millis();
       while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
