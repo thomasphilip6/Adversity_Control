@@ -235,7 +235,7 @@ void Executor(){
   else if (command=="R"){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
-      if(Adversity.posRF < Adversity.initRF+70 && Adversity.posRF > Adversity.initRF-70){
+      if(Adversity.posRF < (Adversity.initRF+35)){
 	Adversity.steer(Adversity.posRF+5, Adversity.posLF+5,Adversity.posRB-5,Adversity.posLB-5,20);
       }
 	previousTime=millis();
@@ -246,7 +246,7 @@ void Executor(){
   else if (command=="L"){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
-      if (Adversity.posRF < Adversity.initRF+70 && Adversity.posRF > Adversity.initRF-70){
+      if (Adversity.posRF > (Adversity.initRF-35)){
        Adversity.steer(Adversity.posRF-5, Adversity.posLF-5,Adversity.posRB+5,Adversity.posLB+5,20);
       }
       previousTime=millis();
