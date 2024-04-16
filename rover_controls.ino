@@ -41,10 +41,10 @@ Servo wheelLB;
 class Rover{
   public:
 
-  int initRF=70;
+  int initRF=67;
   int initLF=67;
-  int initRB=67;
-  int initLB=67;
+  int initRB=61;
+  int initLB=63;
   int posRF=0;
   int posLF=0;
   int posRB=0;
@@ -235,8 +235,10 @@ void Executor(){
   else if (command=="R"){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
-      Adversity.steer(Adversity.posRF+5, Adversity.posLF+5,Adversity.posRB-5,Adversity.posLB-5,20);
-      previousTime=millis();
+      if(Adversity.posRF < Adversity.initRF+70 && Adversity.posRF > Adversity.initRF-70){
+	Adversity.steer(Adversity.posRF+5, Adversity.posLF+5,Adversity.posRB-5,Adversity.posLB-5,20);
+      }
+	previousTime=millis();
       while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
       digitalWrite(greenLed,LOW);
@@ -244,7 +246,9 @@ void Executor(){
   else if (command=="L"){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
-      Adversity.steer(Adversity.posRF-5, Adversity.posLF-5,Adversity.posRB+5,Adversity.posLB+5,20);
+      if (Adversity.posRF < Adversity.initRF+70 && Adversity.posRF > Adversity.initRF-70){
+       Adversity.steer(Adversity.posRF-5, Adversity.posLF-5,Adversity.posRB+5,Adversity.posLB+5,20);
+      }
       previousTime=millis();
       while(millis()-previousTime <50){}
       digitalWrite(blueLed,LOW);
