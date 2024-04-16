@@ -151,7 +151,7 @@ class Rover{
 
 DCMotor motorRF(46,10);//U7
 DCMotor motorLF(2,3);
-DCMotor motorRM(13,44);
+DCMotor motorRM(44,13);
 DCMotor motorLB(4,5);//changed
 DCMotor motorLM(8,9);//changed
 DCMotor motorRB(7,6);//changed
