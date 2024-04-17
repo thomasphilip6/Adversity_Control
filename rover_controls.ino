@@ -134,7 +134,18 @@ Rover_Calculations Adversity_Calculations;
 
 class Rover{
   public:
-
+  int maxRF=130;
+  int minRF=80;
+  int maxLF=180;
+  int minLF=80;
+  int maxRM=211;
+  int minRM=80;
+  int maxLM=233;
+  int minLM=125;
+  int maxRB=255;
+  int minRB=90;
+  int maxLB=155;
+  int minLB=70;
   int initRF=67;
   int initLF=67;
   int initRB=61;
@@ -241,6 +252,22 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
   int speedLM;
   int speedRB;
   int speedLB;
+  if (targetRadius =< 800){
+    maxRF=130*0.8;
+    maxLF=180*0.8;
+    maxRM=211*0.8;
+    maxLM=223*0.8;
+    maxRB=255*0.8;
+    maxLB=155*0.8;
+  }
+  else {
+    maxRF=130;
+    maxLF=180;
+    maxRM=211;
+    maxLM=223;
+    maxRB=255;
+    maxLB=155;
+  }  
   if (side=="R"){
     float radiusLF=targetRadius+Adversity_Calculations.LFx;
     float radiusRF=targetRadius-Adversity_Calculations.RFx;
@@ -248,18 +275,18 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
     float radiusRB=targetRadius-Adversity_Calculations.RBx;
     float radiusRM=targetRadius-Adversity_Calculations.Mx;
     float radiusLM=targetRadius+Adversity_Calculations.Mx;
-    //in case of right turn, LF has the most to travel
-    speedLM=223;//tinker to put the maximum value to match mapping accounting for deviation of motors speed
+    //in case of right turn, LM has the most to travel
+    speedLM=maxLM;
     float speed_RF=(radiusRF/radiusLM)*speedLM;
     float speed_LB=(radiusLB/radiusLM)*speedLM;
     float speed_RB=(radiusRB/radiusLM)*speedLM;
     float speed_RM=(radiusRM/radiusLM)*speedLM;
     float speed_LF=(radiusLF/radiusLM)*speedLM;
-    speedRF=map(speed_RF, 0, 255, 80, 130);
-    speedLB=map(speed_LB, 0, 255, 70, 155);
-    speedRB=map(speed_RB, 0, 255, 90, 255);
-    speedRM=map(speed_RM,0,255,80,211);
-    speedLF=map(speed_LF,0,255,80,180);
+    speedRF=map(speed_RF, 0, 255, minRF, maxRF);
+    speedLB=map(speed_LB, 0, 255, minLB, maxLB);
+    speedRB=map(speed_RB, 0, 255, minRB, maxRB);
+    speedRM=map(speed_RM,0,255,minRM,maxRM);
+    speedLF=map(speed_LF,0,255,minLF,maxLF);
   }
   else {
     float radiusLF=targetRadius-Adversity_Calculations.LFx;
@@ -268,18 +295,18 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
     float radiusRB=targetRadius+Adversity_Calculations.RBx;
     float radiusRM=targetRadius+Adversity_Calculations.Mx;
     float radiusLM=targetRadius-Adversity_Calculations.Mx; 
-    //in case of left turn, RF has the most to travel
-    speedRM=211;//to tinker
+    //in case of left turn, RM has the most to travel
+    speedRM=maxRM;
     float speed_LF=(radiusLF/radiusRM)*speedRM;
     float speed_LB=(radiusLB/radiusRM)*speedRM;
     float speed_RB=(radiusRB/radiusRM)*speedRM;
     float speed_RF=(radiusRF/radiusRM)*speedRM;
     float speed_LM=(radiusLM/radiusRM)*speedRM;
-    speedRF=map(speed_RF, 0, 255, 80, 130);
-    speedLB=map(speed_LB, 0, 255, 70, 155);
-    speedRB=map(speed_RB, 0, 255, 90, 255);
-    speedLM=map(speed_LM,0,255,125,223);
-    speedLF=map(speed_LF,0,255,80,180);
+    speedRF=map(speed_RF, 0, 255, minRF, maxRF);
+    speedLB=map(speed_LB, 0, 255, minLB, maxLB);
+    speedRB=map(speed_RB, 0, 255, minRB, maxRB);
+    speedLM=map(speed_LM,0,255,minLM,maxLM);
+    speedLF=map(speed_LF,0,255,minLF,maxLF);
   }
   motorLF.sendPWM(direction,speedLF);
   motorRF.sendPWM(direction,speedRF);
