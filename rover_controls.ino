@@ -252,7 +252,7 @@ void Rover::speedSteer(String direction, String side, int targetRadius){
   int speedLM;
   int speedRB;
   int speedLB;
-  if (targetRadius =< 800){
+  if (targetRadius <= 800){
     maxRF=130*0.8;
     maxLF=180*0.8;
     maxRM=211*0.8;
