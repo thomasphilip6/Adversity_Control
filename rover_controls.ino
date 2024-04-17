@@ -9,6 +9,9 @@ float batteryFlag;
 char isMooving='n';
 String command;
 long unsigned previousTime=0;
+int debounceTime = 1200;
+long unsigned int lastPress;
+volatile bool failure=false;
 class DCMotor {
   public:
   int IN1;
@@ -323,6 +326,8 @@ int blueLed=49;
 
 void setup()
 {
+  pinMode(21, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(21), ISR_button, FALLING);
   Serial.begin(115200);
   Adversity.initServos();
   delay(500);
@@ -477,4 +482,17 @@ void Executor(){
       digitalWrite(greenLed,LOW);
   }
 }
+}
+void ISR_button(){
+  if ((millis()-lastPress)>debounceTime){
+    failure=true;
+    lastPress=millis();
+    motorLF.sendPWM("forward",0);
+    motorRF.sendPWM("forward",0);
+    motorRM.sendPWM("forward",0);
+    motorLM.sendPWM("forward",0);
+    motorRB.sendPWM("forward",0);
+    motorLB.sendPWM("forward",0); 
+    Serial.end();
+  }
 }
