@@ -373,18 +373,18 @@ void Executor(){
       steerCounter=steerCounter+1;
       if (steerCounter > 0 && steerCounter<=8){
         steerDirection="R";
-        Adversity.steer(Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
+        Adversity.steer(Adversity.posRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
                         20);
       }
       else if (steerCounter<0 && steerCounter>=-8){
         steerDirection="L";
-        Adversity.steer(Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
+        Adversity.steer(Adversity.posRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
                         20);
       }
       else if (steerCounter==0){
@@ -412,18 +412,20 @@ void Executor(){
       steerCounter=steerCounter-1;
       if (steerCounter >0 && steerCounter<=8){
         steerDirection="R";
-        Adversity.steer(Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
+        Adversity.steer(
+                Adversity.posRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                Adversity.posLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                Adversity.posRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                Adversity.posLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
                 20);
       }
       else if (steerCounter<0 && steerCounter>=-8) {
         steerDirection="L";
-        Adversity.steer(Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
-                        Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1]),
+        Adversity.steer(
+                        Adversity.posRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
+                        Adversity.posLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
                         20);        
       }
       else if (steerCounter==0){
