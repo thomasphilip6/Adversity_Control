@@ -111,6 +111,7 @@ int Rover_Calculations::getTargetAngleLB(String direction, float targetRadius){
     angleDecimal=degrees(asin(LBy/LB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
+  return angle;
 }
 int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
   float RB_Radius;
@@ -127,6 +128,7 @@ int Rover_Calculations::getTargetAngleRB(String direction, float targetRadius){
     angleDecimal=degrees(asin(RBy/RB_Radius));
     angle=map(angleDecimal, 0, 180, 0, 180);
   }
+  return angle;
 }
 Rover_Calculations Adversity_Calculations;
 
