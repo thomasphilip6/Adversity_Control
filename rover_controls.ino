@@ -374,11 +374,11 @@ void Executor(){
   if(Serial.available()>0){
   command=Serial.readStringUntil('\r');
   Serial.println("received");
-  if (order.substring(0,1)=="R"){
+  if (command.substring(0,1)=="R"){
       digitalWrite(blueLed,HIGH);
       digitalWrite(greenLed,HIGH);
       targetNav2=control(command);
-      if(order.substring(5,6)=="R"){
+      if(command.substring(5,6)=="R"){
         steerDirection="R";
         if (targetNav2 !=0){
           Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetNav2)),
@@ -391,7 +391,7 @@ void Executor(){
           Adversity.steer(Adversity.initRF, Adversity.initLF,Adversity.initRB,Adversity.initLB,20);
         }
       }
-      else if(order.substring(5,6)=="L"){
+      else if(command.substring(5,6)=="L"){
         steerDirection="L";
         if (targetNav2 !=0){
           Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetNav2)),
