@@ -12,6 +12,11 @@ long unsigned previousTime=0;
 int debounceTime = 1200;
 long unsigned int lastPress;
 volatile bool failure=false;
+
+long unsigned targetNav2;
+String value="";
+String cleanValue="";
+int powers[4]={1000,100,10,1};
 class DCMotor {
   public:
   int IN1;
@@ -369,6 +374,47 @@ void Executor(){
   if(Serial.available()>0){
   command=Serial.readStringUntil('\r');
   Serial.println("received");
+  if (order.substring(0,1)=="R"){
+      digitalWrite(blueLed,HIGH);
+      digitalWrite(greenLed,HIGH);
+      targetNav2=control(command);
+      if(order.substring(5,6)=="R"){
+        steerDirection="R";
+        if (targetNav2 !=0){
+          Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetNav2)),
+                          Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetNav2)),
+                          Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetNav2)),
+                          Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetNav2)),
+                          20);
+        }
+        else {
+          Adversity.steer(Adversity.initRF, Adversity.initLF,Adversity.initRB,Adversity.initLB,20);
+        }
+      }
+      else if(order.substring(5,6)=="L"){
+        steerDirection="L";
+        if (targetNav2 !=0){
+          Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetNav2)),
+                          Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetNav2)),
+                          Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetNav2)),
+                          Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetNav2)),
+                          20);
+        }
+        else {
+          Adversity.steer(Adversity.initRF, Adversity.initLF,Adversity.initRB,Adversity.initLB,20);
+        }
+
+      }
+      else{}
+      if (isMooving=='f' && steerCounter!=0){
+        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+      }
+      previousTime=millis();
+      while(millis()-previousTime <50){}
+      digitalWrite(blueLed,LOW);
+      digitalWrite(greenLed,LOW);
+  }
+
   if (command=="F"){
       digitalWrite(blueLed,HIGH);
       if (steerCounter==0){
@@ -400,88 +446,56 @@ void Executor(){
       while (Serial.available()<0);
       digitalWrite(redLed,LOW);
   }
-  
-  else if (command=="R"){
-      digitalWrite(blueLed,HIGH);
-      digitalWrite(greenLed,HIGH);
-      steerCounter=steerCounter+1;
-      if (steerCounter > 0 && steerCounter<=8){
-        steerDirection="R";
-        Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        20);
-      }
-      else if (steerCounter<0 && steerCounter>=-8){
-        steerDirection="L";
-        Adversity.steer(Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        20);
-      }
-      else if (steerCounter==0){
-        Adversity.steer(Adversity.initRF, Adversity.initLF,Adversity.initRB,Adversity.initLB,20);
-      }
-      else {
-        steerCounter=steerCounter-1;  
-      }
-      //update speeds
-      if (isMooving=='f' && steerCounter!=0){
-        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      }
-      //else if (isMooving=='b' && steerCounter!=0){
-      //  Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      //}  
-      //else{}
-      previousTime=millis();
-      while(millis()-previousTime <50){}
-      digitalWrite(blueLed,LOW);
-      digitalWrite(greenLed,LOW);
-  }
-  else if (command=="L"){
-      digitalWrite(blueLed,HIGH);
-      digitalWrite(greenLed,HIGH);
-      steerCounter=steerCounter-1;
-      if (steerCounter >0 && steerCounter<=8){
-        steerDirection="R";
-        Adversity.steer(
-                Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                20);
-      }
-      else if (steerCounter<0 && steerCounter>=-8) {
-        steerDirection="L";
-        Adversity.steer(
-                        Adversity.initRF + (Adversity_Calculations.getTargetAngleRF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLF + (Adversity_Calculations.getTargetAngleLF(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initRB + (Adversity_Calculations.getTargetAngleRB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        Adversity.initLB + (Adversity_Calculations.getTargetAngleLB(steerDirection,targetRadiusList[abs(steerCounter)-1])),
-                        20);        
-      }
-      else if (steerCounter==0){
-        Adversity.steer(Adversity.initRF, Adversity.initLF,Adversity.initRB,Adversity.initLB,20);  
-      }
-      else {
-        steerCounter=steerCounter+1;  
-      }
-      //update speeds
-      if (isMooving=='f' && steerCounter!=0){
-        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      }
-      else if (isMooving=='b' && steerCounter!=0){
-        Adversity.speedSteer("backward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
-      }  
-      else{}
-      previousTime=millis();
-      while(millis()-previousTime <50){}
-      digitalWrite(blueLed,LOW);
-      digitalWrite(greenLed,LOW);
-  }
 }
+}
+
+long unsigned control(String command){
+  value=command.substring(1,6);
+  int i=0;
+  while(value.substring(i,i+1)=="0"){
+    i++;
+  }
+  int cleanPowers[5-(i+1)];
+  for (int j=0;j<(5-(i+1));j++){
+    cleanPowers[j]=powers[i+j];
+  }
+  cleanValue=value.substring(i,5);
+  long unsigned total=0;
+  long unsigned nb=0;
+  long unsigned conversion;
+  for (int x=0;x<4-i;x++){
+    conversion=stringToInt(cleanValue.substring(x,x+1));
+    nb=conversion*cleanPowers[x];
+    total=total+nb;
+  }
+  return total;
+}
+
+int stringToInt(String myStr){
+  int output=0;
+  
+  if(myStr=="1"){
+    output=1;}
+  else if(myStr=="2"){
+    output=2;}
+  else if(myStr=="3"){
+    output=3;}
+  else if(myStr=="4"){
+    output=4;}
+  else if(myStr=="5"){
+    output=5;}
+  else if(myStr=="6"){
+    output=6;}
+  else if(myStr=="7"){
+    output=7;}
+  else if(myStr=="8"){
+    output=8;}
+  else if(myStr=="9"){
+    output=9;}
+  else if(myStr=="0"){
+    output=0;}
+  
+  return output;
 }
 void ISR_button(){
   if ((millis()-lastPress)>debounceTime){
