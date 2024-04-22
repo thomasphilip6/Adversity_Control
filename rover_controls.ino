@@ -407,7 +407,7 @@ void Executor(){
       }
       else{}
       if (isMooving=='f' && steerCounter!=0){
-        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+        Adversity.speedSteer("forward",steerDirection,targetNav2);
       }
       previousTime=millis();
       while(millis()-previousTime <50){}
@@ -417,11 +417,11 @@ void Executor(){
 
   if (command=="F"){
       digitalWrite(blueLed,HIGH);
-      if (steerCounter==0){
+      if (targetNav2==0){
         Adversity.keepRoverAtSpeed("forward", 255);
       }
       else {
-        Adversity.speedSteer("forward",steerDirection,targetRadiusList[abs(steerCounter)-1]);
+        Adversity.speedSteer("forward",steerDirection,targetNav2);
       }
       isMooving='f';
       while (Serial.available()<0){};
